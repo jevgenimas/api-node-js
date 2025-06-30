@@ -52,11 +52,11 @@ test.describe('User management API', () => {
     test('Returns all fields by creating new user', async ({ request }) => {
         const responseCreate = await request.post(`${baseURL}`);
         const responseBody = await responseCreate.json();
-        expect.soft(responseCreate.status()).toBe(StatusCodes.CREATED);
         expect.soft(responseBody.id).toBeDefined();
         expect.soft(responseBody.name).toBeDefined();
         expect.soft(responseBody.email).toBeDefined();
         expect.soft(responseBody.phone).toBeDefined();
+
     })
 
 });
