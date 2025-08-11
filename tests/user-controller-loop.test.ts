@@ -65,7 +65,7 @@ test('Create few users and verify total number of users', async ({ request }) =>
             let userID = responseBody[i].id;
             userIDs.push(userID);
         }
-        let responseDelete = await request.delete(`${baseURL}/${userIDs[0]}`);
+        await request.delete(`${baseURL}/${userIDs[0]}`);
         const responseAfterDelete = await request.get(`${baseURL}`);
         const responseBodyAfterDelete = await responseAfterDelete.json();
         console.log(responseBodyAfterDelete);
@@ -89,13 +89,27 @@ test('Create few users and verify total number of users', async ({ request }) =>
     });
 
     test('Delete all users and verify empty response', async ({ request }) => {
+        await createUsers(5);
+        const response = await request.get(`${baseURL}`);
+        const responseBody = await response.json();
+        console.log(responseBody);
+        const numberOfObjects = responseBody.length;
 
+        for (let i = 0; i < numberOfObjects; i++) {
+            const userID = responseBody[i].id;
+            const deleteResponse = await request.delete(`${baseURL}/${userID}`);
+            expect(deleteResponse.ok()).toBeTruthy();
+        }
+        const finalResponse = await request.get(`${baseURL}`);
+        const finalResponseBody = await finalResponse.json();
+        console.log('Users after deletion:', finalResponseBody);
+        expect(finalResponseBody.length).toBe(0);
     });
 
     async function createUsers(numberOfUsers: number){
         const requestContext = await request.newContext();
         for(let i=0; i<numberOfUsers; i++){
-            const response = await requestContext.post(`${baseURL}`);
+            await requestContext.post(`${baseURL}`);
         }
     }
 
